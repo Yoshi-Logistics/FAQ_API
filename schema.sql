@@ -9,6 +9,7 @@ CREATE TABLE questions (
  question_body VARCHAR(250) NOT NULL,
  question_date DATE NOT NULL DEFAULT CURRENT_DATE,
  asker_name VARCHAR(50) NOT NULL,
+ asker_email VARCHAR(75) NOT NULL,
  question_helpfullness SMALLINT DEFAULT 0,
  reported BOOLEAN DEFAULT 'false',
  product_id INTEGER NOT NULL
@@ -22,7 +23,9 @@ CREATE TABLE answers (
  body VARCHAR(250) NOT NULL,
  date DATE DEFAULT CURRENT_DATE,
  answerer_name VARCHAR(25) NOT NULL DEFAULT 'NULL',
- helpfulness INTEGER NOT NULL DEFAULT 0,
+ answerer_email VARCHAR(75) NOT NULL,
+ reported SMALLINT NOT NULL DEFAULT 0
+ helpfulness SMALLINT NOT NULL DEFAULT 0,
  question_id INTEGER NOT NULL
 );
 
