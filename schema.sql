@@ -6,13 +6,13 @@ CREATE DATABASE questionsandanswers;
 
 CREATE TABLE questions (
  question_id SERIAL NOT NULL PRIMARY KEY,
- question_body VARCHAR(250) NOT NULL,
- question_date DATE NOT NULL DEFAULT CURRENT_DATE,
+ product_id INTEGER NOT NULL,
+ body VARCHAR(250) NOT NULL,
+ date_written BIGINT NOT NULL,
  asker_name VARCHAR(50) NOT NULL,
  asker_email VARCHAR(75) NOT NULL,
- question_helpfullness SMALLINT DEFAULT 0,
  reported BOOLEAN DEFAULT 'false',
- product_id INTEGER NOT NULL
+ helpful SMALLINT DEFAULT 0
 );
 
 
@@ -20,13 +20,13 @@ CREATE TABLE questions (
 
 CREATE TABLE answers (
  id SERIAL NOT NULL PRIMARY KEY,
+ question_id INTEGER NOT NULL,
  body VARCHAR(250) NOT NULL,
- date DATE DEFAULT CURRENT_DATE,
- answerer_name VARCHAR(25) NOT NULL DEFAULT 'NULL',
+ date_written BIGINT NOT NULL,
+ answerer_name VARCHAR(50) NOT NULL DEFAULT 'NULL',
  answerer_email VARCHAR(75) NOT NULL,
- reported SMALLINT NOT NULL DEFAULT 0
- helpfulness SMALLINT NOT NULL DEFAULT 0,
- question_id INTEGER NOT NULL
+ reported SMALLINT NOT NULL DEFAULT 0,
+ helpful SMALLINT NOT NULL DEFAULT 0
 );
 
 
@@ -34,8 +34,8 @@ CREATE TABLE answers (
 
 CREATE TABLE photos (
  id SERIAL NOT NULL PRIMARY KEY,
- url VARCHAR(250) NOT NULL,
- answers_id INTEGER
+ answers_id INTEGER,
+ url VARCHAR(300) NOT NULL
 );
 
 
@@ -43,4 +43,12 @@ CREATE TABLE photos (
 
 ALTER TABLE answers ADD CONSTRAINT answers_question_id_fkey FOREIGN KEY (question_id) REFERENCES questions(question_id);
 ALTER TABLE photos ADD CONSTRAINT photos_answers_id_fkey FOREIGN KEY (answers_id) REFERENCES answers(id);
+
+-- copy info here
+-- csv files are in git ignore
+
+copy questions from '/home/kevin/SDC/FAQ_API/csv/questions.csv' delimiter ',' csv HEADER;
+copy answers from '/home/kevin/SDC/FAQ_API/csv/answers.csv' delimiter ',' csv HEADER;
+copy photos from '/home/kevin/SDC/FAQ_API/csv/answers_photos.csv' delimiter ',' csv HEADER;
+
 
