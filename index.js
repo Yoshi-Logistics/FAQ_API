@@ -45,7 +45,12 @@ app.put('/api/qa/answers/:answer_id/helpful', controller.helpfulAnswer);
 app.put('/api/qa/answers/:answer_id/report', controller.reportAnswer)
 
 
-app.listen(3000, () => {
+var server = app.listen(3000, () => {
   console.log("server is listening on port 3000")
 });
 
+// app.listen(3000, () => {
+//   console.log("server is listening on port 3000")
+// });
+
+module.exports = server;
