@@ -31,6 +31,8 @@ select question_id, body, date_written, asker_name, helpful, reported FROM quest
 `SELECT question.question_id, question.body, question.date_written, asker_name, question.reported, question.helpful, id, answers.body, answers.date_written, answerer_name, answers.reported, answers.helpful FROM questions INNER JOIN answers ON question.question_id = answers.question_id WHERE question.question_id = (select question_id FROM questions where product_id = ${product} LIMIT 1)`
 
 
+nested queries?
+
 
 
 select statement
