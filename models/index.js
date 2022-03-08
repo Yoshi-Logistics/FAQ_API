@@ -3,8 +3,7 @@ const db = require('../db');
 
 var getQuestions = function (product ,callback) {
   console.log('in models')
-  var queryString = `SELECT json_agg(test)
-  FROM (
+  var queryString = `
     SELECT
       questions.question_id AS question_id,
       questions.body AS question_body,
@@ -33,8 +32,7 @@ var getQuestions = function (product ,callback) {
       )AS nested_answers
     )As answers
     FROM questions
-    where questions.product_id = ${product}
-  )AS  test;`
+    where questions.product_id = ${product}`
   db.query(queryString, callback)
 };
 
