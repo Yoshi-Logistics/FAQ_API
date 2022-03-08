@@ -7,7 +7,7 @@ var getQuestions = function (product ,callback) {
     SELECT
       questions.question_id AS question_id,
       questions.body AS question_body,
-      questions.date_written AS question_date,
+      to_timestamp(questions.date_written/1000) AS question_date,
       questions.asker_name,
       questions.helpful AS question_helpfulness,
       questions.reported,
