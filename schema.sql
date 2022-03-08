@@ -47,8 +47,8 @@ ALTER TABLE photos ADD CONSTRAINT photos_answers_id_fkey FOREIGN KEY (answers_id
 -- copy info here
 -- csv files are in git ignore
 
-copy questions from '/home/kevin/SDC/FAQ_API/csv/questions.csv' delimiter ',' csv HEADER;
-copy answers from '/home/kevin/SDC/FAQ_API/csv/answers.csv' delimiter ',' csv HEADER;
-copy photos from '/home/kevin/SDC/FAQ_API/csv/answers_photos.csv' delimiter ',' csv HEADER;
+copy questions from '/mnt/c/Users/kevin/HackReactor/SDC/FAQ_API/FAQ_API/csv/questions.csv' delimiter ',' csv HEADER;
+copy answers from '/mnt/c/Users/kevin/HackReactor/SDC/FAQ_API/FAQ_API/csv/answers.csv' delimiter ',' csv HEADER;
+copy photos from '/mnt/c/Users/kevin/HackReactor/SDC/FAQ_API/FAQ_API/csv/answers_photos.csv' delimiter ',' csv HEADER;
 
 
