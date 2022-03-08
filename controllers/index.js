@@ -3,12 +3,15 @@ const model = require('../models');
 // get all questions
 var getQuestions = function(req, res) {
   const product = req.params.product_id;
-  console.log('product: ', product);
+  // console.log('product: ', product);
   model.getQuestions(product, (err, result) => {
     if (err) {
+      console.log(err);
       res.status(500).send();
     } else {
-      res.send(result)
+      // loop through the array?
+      // result.rows.forEach( result => console.log(result.body))
+      res.send(result.rows)
     }
   })
   // console.log('entered getQuestions')
@@ -23,6 +26,7 @@ var getAnswers = function (req,res) {
       res.status(500).send();
     } else {
       res.status(200).send(result.rows)
+      // at this point you have an array of answers with photos
     }
   })
 }
