@@ -16,6 +16,9 @@ var getQuestions = function (product, callback) {
         FROM ( SELECT json_object_agg( answers.id, json_build_object(
           'id', answers.id,
           'body', answers.body,
+          'date', to_timestamp(answers.date_written/1000),
+          'answerer_name', answers.answerer_name,
+          'helpfullness', answers.helpful,
           'photos', (SELECT coalesce
             (photos, '[]':: json)
             FROM ( SELECT json_agg(json_build_object(
@@ -27,7 +30,7 @@ var getQuestions = function (product, callback) {
         )) AS answers
         FROM answers
         WHERE answers.question_id = questions.question_id)
-      AS answersObject)))
+      AS answersObject)) ORDER BY helpful DESC)
     AS results FROM questions
     WHERE product_id = ${product}`
   db.query(queryString, callback)
@@ -50,6 +53,7 @@ var getAnswers = function (question,limit, cb) {
   WHERE a.question_id = ${question}
   AND a.reported = 0
   GROUP BY a.id
+  ORDER BY a.helpful DESC
   LIMIT ${limit}`
   db.query(queryString, cb)
 }
@@ -60,100 +64,19 @@ var addQuestion = function(data, cb){
   db.query(queryString, [data.product_id, data.body, data.date, data.name, data.email, data.reported, data.helpful], cb)
 }
 
-module.exports= { getQuestions, getAnswers, addQuestion };
-// `Select * FROM questions where product_id = ${product} ;`
-/*
-select statements used so far:
-// returns first quesiton for one product_id
-select question_id, body, date_written, asker_name, helpful, reported FROM questions where product_id = ${product} LIMIT 1
+// mark a question as helpful
+var helpfulQuestion = function( id, cb ) {
+  // console.log('here')
+  var queryString = `UPDATE questions
+    SET helpful = helpful + 1
+    WHERE question_id = ${id}`
+  db.query(queryString, cb);
+}
 
-// returns all questions for one product:
-select question_id, body, date_written, asker_name, helpful, reported FROM questions where product_id = ${product}
+//  report a question
+var reportQuestion = function (id, cb) {
+  var queryString =`UPDATE questions SET reported = NOT reported WHERE question_id = ${id}`
+  db.query(queryString, cb)
+}
 
-// returns all answers for one question
-//  used in the getAnswers function
-`SELECT * FROM answers where question_id = (select question_id FROM questions where product_id = ${product} LIMIT 1)`
-
-// try a join to get the desired info in one object
-// attempt not working tho
-`SELECT question.question_id, question.body, question.date_written, asker_name, question.reported, question.helpful, id, answers.body, answers.date_written, answerer_name, answers.reported, answers.helpful FROM questions INNER JOIN answers ON question.question_id = answers.question_id WHERE question.question_id = (select question_id FROM questions where product_id = ${product} LIMIT 1)`
-
-unsure what this does
-`SELECT questions.question_id, answers.id FROM questions INNER JOIN answers ON question.question_id = answers.question_id where questions.question_id = 1`
-
-//left join answers with photos
-SELECT a.id, a.question_id, a.body, a.date_written, a.answerer_name, a.answerer_email, a.reported, a.helpful, p.url FROM answers a LEFT JOIN photos p ON a.id = p.answers_id WHERE a.question_id = 1 AND a.reported = 0
-
-nested queries?
-
-
-
-select statement
- from where are we selecting
- join statementes
- where
- group
-look at json build object
-
-*/
-
-/*-------------------------- touch if dumb:--------------------------------
-
-`SELECT
-      questions.question_id AS question_id,
-      questions.body AS question_body,
-      to_timestamp(questions.date_written/1000) AS question_date,
-      questions.asker_name,
-      questions.helpful AS question_helpfulness,
-      questions.reported,
-      (
-        SELECT jsonb_agg(nested_answers)
-        FROM (
-          SELECT
-            answers.id,
-            answers.body,
-            (
-              SELECT json_agg(nested_photos)
-              FROM (
-                SELECT
-                photos.id,
-                photos.url
-                FROM photos
-                where photos.answers_id = answers.id
-              )As nested_photos
-            )As photos
-      FROM answers
-      where answers.question_id = questions.question_id
-      )AS nested_answers
-    )As answers
-    FROM questions
-    where questions.product_id = ${product}`
-  */
- /*
- SELECT json_agg(
-	json_build_object(
-		'question_id', questions.question_id,
-		'question_body', questions.body,
-		'question_date', to_timestamp(questions.date_written/1000),
-		'asker_name', questions.asker_name,
-		'reported', questions.reported,
-		'question_helpfulness', questions.helpful,
-		'answers', (SELECT coalesce
-      (answers, '{}':: json)
-      FROM ( SELECT json_object_agg( answers.id, json_build_object(
-		    'id', answers.id,
-		    'body', answers.body,
-		    'photos', (SELECT coalesce
-          (photos, '[]':: json)
-          FROM ( SELECT json_agg(json_build_object(
-            'id', photos.id,
-            'url', photos.url))
-          AS photos From photos
-					WHERE photos.answers_id = answers.id)
-          AS photosArray)
-      )) AS answers
-      FROM answers
-      WHERE answers.question_id = questions.question_id)
-    AS answersObject)))
-  AS results FROM questions WHERE product_id = 1
- */
+module.exports= { getQuestions, getAnswers, addQuestion, helpfulQuestion, reportQuestion};

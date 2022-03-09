@@ -9,7 +9,10 @@ var getQuestions = function(req, res) {
       console.log(err);
       res.status(500).send();
     } else {
-      const slicedArray = result.rows[0].results.slice(0, limit)
+      let slicedArray = result.rows[0].results;
+      if(Array.isArray(slicedArray)) {
+        slicedArray = result.rows[0].results.slice(0, limit)
+      }
       const returnObj = {'product_id': product, 'results': slicedArray}
       res.status(200).send( returnObj)
     }
@@ -71,21 +74,29 @@ var postAnswer = function (req,res) {
 //  add to helpful | question
 
 var helpfulQuestion = function (req,res) {
-  if (err) {
-    res.status(400).send
-  } else {
-    res.status(204).send(result)
-  }
+  const question = req.params.question_id;
+  // console.log('question: ', question);
+  model.helpfulQuestion(question, (err, result) => {
+    if (err) {
+      res.status(400).send()
+    } else {
+      res.status(204).send('updated!')
+    }
+  })
 }
 
 //  report a Question
 
 var reportQuestion = function (req,res) {
-  if (err) {
-    res.status(400).send
-  } else {
-    res.status(204).send(result)
-  }
+  const question = req.params.question_id;
+  // console.log('question: ', question);
+  model.helpfulQuestion(question, (err, result) => {
+    if (err) {
+      res.status(400).send()
+    } else {
+      res.status(204).send('updated!')
+    }
+  })
 }
 
 //  helpful Answer

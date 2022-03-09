@@ -1,3 +1,4 @@
 /csv
 /db/pass.js
 node_modules
+k6.js
