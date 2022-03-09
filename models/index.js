@@ -34,8 +34,7 @@ var getQuestions = function (product, callback) {
 };
 
 // get answers for a question
-var getAnswers = function (question, cb) {
-
+var getAnswers = function (question,limit, cb) {
   // following sql gives pretty close to what we want
   // only issue is that for no photos the array has keys with values === null
   var queryString = `SELECT
@@ -51,7 +50,7 @@ var getAnswers = function (question, cb) {
   WHERE a.question_id = ${question}
   AND a.reported = 0
   GROUP BY a.id
-  `
+  LIMIT ${limit}`
   db.query(queryString, cb)
 }
 

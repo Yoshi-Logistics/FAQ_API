@@ -19,12 +19,20 @@ var getQuestions = function(req, res) {
 //get Answers for a Question
 var getAnswers = function (req,res) {
   const question = req.params.question_id;
-  model.getAnswers(question, (err, result) => {
+  const page = req.query.page || 0;
+  const limit = req.query.count || 5;
+  model.getAnswers(question, limit, (err, result) => {
     if (err) {
-      res.status(500).send();
+      res.status(500).send(err);
     } else {
-      res.status(200).send(result.rows)
-      // at this point you have an array of answers with photos
+      const returnObj = {
+        "question": question,
+        "page": page,
+        "count": limit,
+        "results": result.rows
+      }
+      res.status(200).send(returnObj)
+
     }
   })
 }
