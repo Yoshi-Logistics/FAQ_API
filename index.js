@@ -21,7 +21,7 @@ app.use('/api/qa/questions', questions);
 //   res.send()
 // })
 
-app.use('/api/qa/answers', answers)
+app.use('/api/qa/answers/:answer_id', answers)
 
 
 var server = app.listen(3000, () => {

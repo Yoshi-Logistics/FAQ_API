@@ -60,3 +60,9 @@ CREATE INDEX photos_answers_id_idx ON photos (answers_id);
 
 -- sequences
 SELECT setval(pg_get_serial_sequence('questions', 'question_id'), coalesce(max(question_id), 0)+1 , false) FROM questions;
+
+SELECT setval(pg_get_serial_sequence('answers', 'id'), coalesce(max(id), 0)+1 , false) FROM answers;
+
+SELECT setval(pg_get_serial_sequence('photos', 'id'), coalesce(max(id), 0)+1 , false) FROM photos;
+
+
