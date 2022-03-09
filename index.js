@@ -5,22 +5,30 @@ const controller = require('./controllers');
 // import middlewear
 
 const app = express();
-app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+app.use(express.json({extended: true}))
 
-
-//routes
 
 const questions = require('./router/questions');
 
 const answers = require('./router/answers')
 
+//routes
+
 app.use('/api/qa/questions', questions);
+// app.get('/api/qa/questions/:product_id', (req,res) => {
+//   console.log('hello world');
+//   res.send()
+// })
 
 app.use('/api/qa/answers', answers)
+
 
 var server = app.listen(3000, () => {
   console.log("server is listening on port 3000")
 });
+
+
 
 // app.listen(3000, () => {
 //   console.log("server is listening on port 3000")

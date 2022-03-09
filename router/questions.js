@@ -12,7 +12,7 @@ questions.get('/:product_id', controller.getQuestions);
 
 //  post: add a Question
 //    params: body | name | email | product_id
-questions.post('', controller.postQuestion);
+questions.post('/', controller.postQuestion);
 
 //  post --> add an Answer
 //    params (body) : body | name | email | productID

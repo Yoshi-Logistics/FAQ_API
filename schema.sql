@@ -51,4 +51,12 @@ copy questions from '/mnt/c/Users/kevin/HackReactor/SDC/FAQ_API/FAQ_API/csv/ques
 copy answers from '/mnt/c/Users/kevin/HackReactor/SDC/FAQ_API/FAQ_API/csv/answers.csv' delimiter ',' csv HEADER;
 copy photos from '/mnt/c/Users/kevin/HackReactor/SDC/FAQ_API/FAQ_API/csv/answers_photos.csv' delimiter ',' csv HEADER;
 
+-- product_id index
+CREATE INDEX questions_prodcut_id_idx ON questions (product_id);
+-- q.questions
+CREATE INDEX answers_question_id_idx ON answers (question_id);
+CREATE INDEX answers_reported_idx ON answers (reported);
+CREATE INDEX photos_answers_id_idx ON photos (answers_id);
 
+-- sequences
+SELECT setval(pg_get_serial_sequence('questions', 'question_id'), coalesce(max(question_id), 0)+1 , false) FROM questions;

@@ -1,38 +1,35 @@
 const db = require('../db');
 
 
-var getQuestions = function (product ,callback) {
-  console.log('in models')
-  var queryString = `
-    SELECT
-      questions.question_id AS question_id,
-      questions.body AS question_body,
-      to_timestamp(questions.date_written/1000) AS question_date,
-      questions.asker_name,
-      questions.helpful AS question_helpfulness,
-      questions.reported,
-      (
-        SELECT jsonb_agg(nested_answers)
-        FROM (
-          SELECT
-            answers.id,
-            answers.body,
-            (
-              SELECT json_agg(nested_photos)
-              FROM (
-                SELECT
-                photos.id,
-                photos.url
-                FROM photos
-                where photos.answers_id = answers.id
-              )As nested_photos
-            )As photos
-      FROM answers
-      where answers.question_id = questions.question_id
-      )AS nested_answers
-    )As answers
-    FROM questions
-    where questions.product_id = ${product}`
+var getQuestions = function (product, callback) {
+
+  var queryString =  `SELECT json_agg(
+    json_build_object(
+      'question_id', questions.question_id,
+      'question_body', questions.body,
+      'question_date', to_timestamp(questions.date_written/1000),
+      'asker_name', questions.asker_name,
+      'reported', questions.reported,
+      'question_helpfulness', questions.helpful,
+      'answers', (SELECT coalesce
+        (answers, '{}':: json)
+        FROM ( SELECT json_object_agg( answers.id, json_build_object(
+          'id', answers.id,
+          'body', answers.body,
+          'photos', (SELECT coalesce
+            (photos, '[]':: json)
+            FROM ( SELECT json_agg(json_build_object(
+              'id', photos.id,
+              'url', photos.url))
+            AS photos From photos
+            WHERE photos.answers_id = answers.id)
+            AS photosArray)
+        )) AS answers
+        FROM answers
+        WHERE answers.question_id = questions.question_id)
+      AS answersObject)))
+    AS results FROM questions
+    WHERE product_id = ${product}`
   db.query(queryString, callback)
 };
 
@@ -58,7 +55,13 @@ var getAnswers = function (question, cb) {
   db.query(queryString, cb)
 }
 
-module.exports= { getQuestions, getAnswers };
+// add a question
+var addQuestion = function(data, cb){
+  var queryString = 'INSERT INTO questions ( product_id, body, date_written, asker_name, asker_email, reported, helpful) VALUES ($1, $2, $3, $4, $5, $6, $7)'
+  db.query(queryString, [data.product_id, data.body, data.date, data.name, data.email, data.reported, data.helpful], cb)
+}
+
+module.exports= { getQuestions, getAnswers, addQuestion };
 // `Select * FROM questions where product_id = ${product} ;`
 /*
 select statements used so far:
@@ -97,12 +100,10 @@ look at json build object
 
 /*-------------------------- touch if dumb:--------------------------------
 
-`SELECT row_to_json(test)
-  FROM (
-    SELECT
+`SELECT
       questions.question_id AS question_id,
       questions.body AS question_body,
-      questions.date_written AS question_date,
+      to_timestamp(questions.date_written/1000) AS question_date,
       questions.asker_name,
       questions.helpful AS question_helpfulness,
       questions.reported,
@@ -127,8 +128,7 @@ look at json build object
       )AS nested_answers
     )As answers
     FROM questions
-    where questions.product_id = ${product}
-  )AS  test;`
+    where questions.product_id = ${product}`
   */
  /*
  SELECT json_agg(
@@ -139,13 +139,22 @@ look at json build object
 		'asker_name', questions.asker_name,
 		'reported', questions.reported,
 		'question_helpfulness', questions.helpful,
-		'answers', (select coalesce(answers, '{}':: json) FROM ( select json_object_agg( answers.id, json_build_object(
-		'id', answers.id,
-		'body', answers.body,
-		'photos', (select coalesce(photos, '[]':: json) FROM ( select json_agg(json_build_object('id', photos.id, 'url', photos.url)) as photos From photos
-									Where photos.answers_id = answers.id) as photosArray)
-
-			))AS answers FROM answers where answers.question_id = questions.question_id
-			)As answersObject
-))) as results from questions where product_id = 1
+		'answers', (SELECT coalesce
+      (answers, '{}':: json)
+      FROM ( SELECT json_object_agg( answers.id, json_build_object(
+		    'id', answers.id,
+		    'body', answers.body,
+		    'photos', (SELECT coalesce
+          (photos, '[]':: json)
+          FROM ( SELECT json_agg(json_build_object(
+            'id', photos.id,
+            'url', photos.url))
+          AS photos From photos
+					WHERE photos.answers_id = answers.id)
+          AS photosArray)
+      )) AS answers
+      FROM answers
+      WHERE answers.question_id = questions.question_id)
+    AS answersObject)))
+  AS results FROM questions WHERE product_id = 1
  */

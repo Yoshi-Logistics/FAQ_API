@@ -3,19 +3,17 @@ const model = require('../models');
 // get all questions
 var getQuestions = function(req, res) {
   const product = req.params.product_id;
-  // console.log('product: ', product);
+  const limit = req.body.count || 5
   model.getQuestions(product, (err, result) => {
     if (err) {
       console.log(err);
       res.status(500).send();
     } else {
-      // loop through the array?
-      // result.rows.forEach( result => console.log(result.body))
-      res.send(result.rows)
+      const slicedArray = result.rows[0].results.slice(0, limit)
+      const returnObj = {'product_id': product, 'results': slicedArray}
+      res.status(200).send( returnObj)
     }
   })
-  // console.log('entered getQuestions')
-  // console.log('params should be 100: ', req.params.product_id)
 }
 
 //get Answers for a Question
@@ -34,11 +32,22 @@ var getAnswers = function (req,res) {
 //  add a question
 
 var postQuestion = function (req,res) {
-  if (err) {
-    res.status(424).send
-  } else {
-    res.status(201).send(result)
+  const data = {
+    body : req.body.body,
+    name : req.body.name,
+    email : req.body.email,
+    product_id : req.body.product_id,
+    date : Date.now(),
+    reported : 'false',
+    helpful : 0
   }
+  model.addQuestion(data, (err, result)=> {
+    if (err) {
+      res.status(424).send(err)
+    } else {
+      res.status(201).send('success')
+    }
+  })
 }
 
 //  add an answer
