@@ -61,6 +61,10 @@ var postQuestion = function (req,res) {
   })
 }
 
+var postAnswer = function (req,res) {
+
+}
+
 //  add an answer
 //  might not work
 // var postAnswer = function (req,res) {
@@ -95,7 +99,7 @@ var postQuestion = function (req,res) {
   // } else {
   //   res.status(201).send(result)
   // }
-}
+// }
 
 //  add to helpful | question
 
