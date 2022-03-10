@@ -3,10 +3,10 @@ const answers = require('express').Router();
 
 //  put--> mark as helpful
 //    params: answer_id
-answers.put('/:answer_id/helpful', helpfulAnswer);
+answers.put('/helpful', helpfulAnswer);
 
 //  put --> report a question
 //    params: answer_id
-answers.put('/:answer_id/report', reportAnswer)
+answers.put('/report', reportAnswer)
 
 module.exports = answers;
