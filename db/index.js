@@ -9,4 +9,6 @@ const pool = new Pool ({
   port: 5432
 })
 
+// maybe a good idea to get this out of here
+
 module.exports = pool;
