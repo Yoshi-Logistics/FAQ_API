@@ -54,10 +54,11 @@ var postQuestion = function (req,res) {
     }
   })
 }
+// add an answer
+var postAnswer = function (req,res) {
 
-//  add an answer
-var postAnswer = function (req, res) {
 }
+
 
 
 //  add to helpful | question
