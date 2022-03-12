@@ -3,58 +3,94 @@ const db = require('../db');
 
 var getQuestions = function (product, callback) {
 
-  var queryString =  `SELECT json_agg(
-    json_build_object(
-      'question_id', questions.question_id,
-      'question_body', questions.body,
-      'question_date', to_timestamp(questions.date_written/1000),
-      'asker_name', questions.asker_name,
-      'reported', questions.reported,
-      'question_helpfulness', questions.helpful,
-      'answers', (SELECT coalesce
-        (answers, '{}':: json)
-        FROM ( SELECT json_object_agg( answers.id, json_build_object(
-          'id', answers.id,
-          'body', answers.body,
-          'date', to_timestamp(answers.date_written/1000),
-          'answerer_name', answers.answerer_name,
-          'helpfullness', answers.helpful,
-          'photos', (SELECT coalesce
-            (photos, '[]':: json)
-            FROM ( SELECT json_agg(json_build_object(
-              'id', photos.id,
-              'url', photos.url))
-            AS photos From photos
-            WHERE photos.answers_id = answers.id)
-            AS photosArray)
-        )) AS answers
-        FROM answers
-        WHERE answers.question_id = questions.question_id)
-      AS answersObject)) ORDER BY helpful DESC)
-    AS results FROM questions
-    WHERE product_id = ${product}`
+  // var queryString =  `SELECT json_agg(
+  //   json_build_object(
+  //     'question_id', questions.question_id,
+  //     'question_body', questions.body,
+  //     'question_date', to_timestamp(questions.date_written/1000),
+  //     'asker_name', questions.asker_name,
+  //     'reported', questions.reported,
+  //     'question_helpfulness', questions.helpful,
+  //     'answers', (SELECT coalesce
+  //       (answers, '{}':: json)
+  //       FROM ( SELECT json_object_agg( answers.id, json_build_object(
+  //         'id', answers.id,
+  //         'body', answers.body,
+  //         'date', to_timestamp(answers.date_written/1000),
+  //         'answerer_name', answers.answerer_name,
+  //         'helpfullness', answers.helpful,
+  //         'photos', (SELECT coalesce
+  //           (photos, '[]':: json)
+  //           FROM ( SELECT json_agg(json_build_object(
+  //             'id', photos.id,
+  //             'url', photos.url))
+  //           AS photos From photos
+  //           WHERE photos.answers_id = answers.id)
+  //           AS photosArray)
+  //       )) AS answers
+  //       FROM answers
+  //       WHERE answers.question_id = questions.question_id)
+  //     AS answersObject)
+  //     ) ORDER BY helpful DESC)
+  //   AS results FROM questions
+  //   WHERE product_id = ${product}`
+  var queryString = `SELECT coalesce (results, '[]':: json)
+  FROM (SELECT json_agg(
+      json_build_object(
+        'question_id', questions.question_id,
+        'question_body', questions.body,
+        'question_date', to_timestamp(questions.date_written/1000),
+        'asker_name', questions.asker_name,
+        'reported', questions.reported,
+        'question_helpfulness', questions.helpful,
+        'answers', (SELECT coalesce
+          (answers, '{}':: json)
+          FROM ( SELECT json_object_agg( answers.id, json_build_object(
+            'id', answers.id,
+            'body', answers.body,
+            'date', to_timestamp(answers.date_written/1000),
+            'answerer_name', answers.answerer_name,
+            'helpfullness', answers.helpful,
+            'photos', (SELECT coalesce
+              (photos, '[]':: json)
+              FROM ( SELECT json_agg(json_build_object(
+                'id', photos.id,
+                'url', photos.url))
+              AS photos From photos
+              WHERE photos.answers_id = answers.id)
+              AS photosArray)
+          )) AS answers
+          FROM answers
+          WHERE answers.question_id = questions.question_id)
+        AS answersObject)
+        ) ORDER BY helpful DESC)
+      AS results FROM questions
+      WHERE product_id = ${product})
+      AS resultsObj`
   db.query(queryString, callback)
 };
 
 // get answers for a question
 var getAnswers = function (question,limit, cb) {
-  // following sql gives pretty close to what we want
-  // only issue is that for no photos the array has keys with values === null
-  var queryString = `SELECT
-  a.id AS answer_id,
-  a.body,
-  to_timestamp(a.date_written/1000) AS date,
-  a.answerer_name,
-  a.helpful,
-  json_agg(json_build_object('url' , p.url, 'id', p.id)) AS photos
-  FROM answers a
-  LEFT JOIN photos p
-  ON a.id = p.answers_id
-  WHERE a.question_id = ${question}
-  AND a.reported = 0
-  GROUP BY a.id
-  ORDER BY a.helpful DESC
-  LIMIT ${limit}`
+var queryString =  `SELECT coalesce (answers, '[]':: json)
+  FROM ( SELECT json_agg(json_build_object(
+    'id', answers.id,
+    'body', answers.body,
+    'date', to_timestamp(answers.date_written/1000),
+    'answerer_name', answers.answerer_name,
+    'helpfullness', answers.helpful,
+    'photos', (SELECT coalesce
+      (photos, '[]':: json)
+      FROM ( SELECT json_agg(json_build_object(
+        'id', photos.id,
+        'url', photos.url))
+      AS photos From photos
+      WHERE photos.answers_id = answers.id)
+      AS photosArray)
+  )) AS answers
+  FROM answers
+  WHERE answers.question_id =${question})
+AS answersObject`
   db.query(queryString, cb)
 }
 

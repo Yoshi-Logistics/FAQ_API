@@ -9,10 +9,7 @@ var getQuestions = function(req, res) {
       console.log(err);
       res.status(500).send();
     } else {
-      let slicedArray = result.rows[0].results;
-      if(Array.isArray(slicedArray)) {
-        slicedArray = result.rows[0].results.slice(0, limit)
-      }
+      const slicedArray = result.rows[0].coalesce.slice(0, limit)
       const returnObj = {'product_id': product, 'results': slicedArray}
       res.status(200).send( returnObj)
     }
@@ -26,16 +23,16 @@ var getAnswers = function (req,res) {
   const limit = req.query.count || 5;
   model.getAnswers(question, limit, (err, result) => {
     if (err) {
+      console.log(err)
       res.status(500).send(err);
     } else {
       const returnObj = {
         "question": question,
         "page": page,
         "count": limit,
-        "results": result.rows
+        "results": result.rows[0].coalesce
       }
       res.status(200).send(returnObj)
-
     }
   })
 }
