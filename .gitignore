@@ -1,4 +1,4 @@
 /csv
-/db/pass.js
+/db/config.js
 node_modules
 k6.js
