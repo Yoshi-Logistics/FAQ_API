@@ -44,10 +44,7 @@ var getAnswers = function (req,res) {
 
 var postQuestion = function (req,res) {
   const data = {
-    body : req.body.body,
-    name : req.body.name,
-    email : req.body.email,
-    product_id : req.body.product_id,
+    postInfo : req.body,
     date : Date.now(),
     reported : 'false',
     helpful : 0
@@ -62,46 +59,14 @@ var postQuestion = function (req,res) {
 }
 
 //  add an answer
-//  might not work
-// var postAnswer = function (req,res) {
-//   // console.log('array?: ', (Array.isArray(req.body.photos)))
-//   //data has to be passed as json
-//   const photos = req.body.photos;
-//   const data = {
-//     body : req.body.body,
-//     name : req.body.name,
-//     email : req.body.email,
-//     question_id : req.params.question_id,
-//     date : Date.now(),
-//     reported : 'false',
-//     helpful : 0
-//   }
-//   model.addAnswer(data, (err, result)=> {
-//     if (err) {
-//       res.status(424).send('err in adding answer')
-//     } else {
-//       photos.forEach(url => {
-//         model.addPhoto(url, (err, result) => {
-//           if (err){
-//             res.status(424).send('pic upload fail')
-//           }
-//         });
-//       })
-//       res.status(201).send('posted')
-//     }
-//   })
-  // if (err) {
-  //   res.status(424).send
-  // } else {
-  //   res.status(201).send(result)
-  // }
+var postAnswer = function (req, res) {
 }
+
 
 //  add to helpful | question
 
 var helpfulQuestion = function (req,res) {
   const question = req.params.question_id;
-  // console.log('question: ', question);
   model.helpfulQuestion(question, (err, result) => {
     if (err) {
       res.status(400).send()

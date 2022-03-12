@@ -16,10 +16,6 @@ const answers = require('./router/answers')
 //routes
 
 app.use('/api/qa/questions', questions);
-// app.get('/api/qa/questions/:product_id', (req,res) => {
-//   console.log('hello world');
-//   res.send()
-// })
 
 app.use('/api/qa/answers/:answer_id', answers)
 
@@ -28,10 +24,5 @@ var server = app.listen(3000, () => {
   console.log("server is listening on port 3000")
 });
 
-
-
-// app.listen(3000, () => {
-//   console.log("server is listening on port 3000")
-// });
 
 module.exports = server;

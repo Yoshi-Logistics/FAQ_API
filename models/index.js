@@ -61,13 +61,7 @@ var getAnswers = function (question,limit, cb) {
 // add a question
 var addQuestion = function(data, cb){
   var queryString = 'INSERT INTO questions ( product_id, body, date_written, asker_name, asker_email, reported, helpful) VALUES ($1, $2, $3, $4, $5, $6, $7)'
-  db.query(queryString, [data.product_id, data.body, data.date, data.name, data.email, data.reported, data.helpful], cb)
-}
-
-// add a Answer
-var addQuestion = function(data, cb){
-  var queryString = 'INSERT INTO answers ( question_id, body, date_written, answerer_name, answerer_email, reported, helpful) VALUES ($1, $2, $3, $4, $5, $6, $7)'
-  db.query(queryString, [data.question_id, data.body, data.date, data.name, data.email, data.reported, data.helpful], cb)
+  db.query(queryString, [data.postInfo.product_id, data.postInfo.body, data.date, data.postInfo.name, data.postInfo.email, data.reported, data.helpful], cb)
 }
 
 // add a photo
@@ -84,7 +78,6 @@ var addPhoto = function(url, cb) {
 }
 
 var helpfulQuestion = function( id, cb ) {
-  // console.log('here')
   var queryString = `UPDATE questions
     SET helpful = helpful + 1
     WHERE question_id = ${id}`
