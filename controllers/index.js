@@ -41,7 +41,7 @@ var getAnswers = function (req,res) {
 
 var postQuestion = function (req,res) {
   const data = {
-    postInfo : req.body,
+    ...req.body,
     date : Date.now(),
     reported : 'false',
     helpful : 0
