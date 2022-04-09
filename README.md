@@ -32,10 +32,80 @@ Questions and Answers microservice built to serve questions and answers section 
  | page | Number | Input what page answers should be selected from. Default = 1 |
  | Count | Number | Input how many Questions are desired. Default = 5 |
  
- #### Return:
- Request: `` /api/qa/questions/1 ``
+ #### Example:
+  ##### Request: `` /api/qa/questions/7 ``
+  ##### Response:
  ```
- json goes here
+{
+    "product_id": "7",
+    "results": [
+        {
+            "question_id": 41,
+            "question_body": "What fabric is the top made of?",
+            "question_date": "2020-09-05T09:19:08-07:00",
+            "asker_name": "coolkid",
+            "reported": false,
+            "question_helpfulness": 9,
+            "answers": {
+                "81": {
+                    "id": 81,
+                    "body": "Suede",
+                    "date": "2021-02-08T12:07:08-08:00",
+                    "answerer_name": "warmkid",
+                    "helpfullness": 0,
+                    "photos": [
+                        {
+                            "id": 17,
+                            "url": "https://images.unsplash.com/photo-1548430395-ec39eaf2aa1a?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1974&q=80"
+                        }
+                    ]
+                },
+                "82": {
+                    "id": 82,
+                    "body": "Something pretty soft but I can't be sure",
+                    "date": "2020-11-21T21:27:23-08:00",
+                    "answerer_name": "warmkid",
+                    "helpfullness": 1,
+                    "photos": []
+                },
+                "93": {
+                    "id": 93,
+                    "body": "Its the best! Seriously magic fabric",
+                    "date": "2021-02-21T21:19:34-08:00",
+                    "answerer_name": "warmkid",
+                    "helpfullness": 1,
+                    "photos": []
+                },
+                "94": {
+                    "id": 94,
+                    "body": "Supposedly suede, but I think its synthetic",
+                    "date": "2021-03-02T06:17:15-08:00",
+                    "answerer_name": "warmkid",
+                    "helpfullness": 2,
+                    "photos": []
+                }
+            }
+        },
+        {
+            "question_id": 43,
+            "question_body": "Why is this product cheaper here than other sites?",
+            "question_date": "2020-09-05T09:19:08-07:00",
+            "asker_name": "l33tgamer",
+            "reported": false,
+            "question_helpfulness": 5,
+            "answers": {}
+        },
+        {
+            "question_id": 42,
+            "question_body": "How long does it last?",
+            "question_date": "2020-06-09T16:43:00-07:00",
+            "asker_name": "jbilas",
+            "reported": true,
+            "question_helpfulness": 0,
+            "answers": {}
+        }
+    ]
+}
  ```
 # 
 
@@ -55,10 +125,70 @@ Questions and Answers microservice built to serve questions and answers section 
  | page | Number | Input what page answers should be selected from. Default = 1 |
  | Count | Number | Input how many Questions are desired. Default = 5 |
  
- #### Return:
- Request: `` /api/qa/questions/1/answers ``
+ #### Example:
+  ##### Request: `` /api/qa/questions/1/answers ``
+  ##### Response:
  ```
- json goes here
+{
+    "question": "1",
+    "page": 0,
+    "count": 5,
+    "results": [
+        {
+            "answer_id": 8,
+            "body": "DONT BUY IT! It's bad for the environment",
+            "date": "2020-09-19T21:49:22.000Z",
+            "answerer_name": "metslover",
+            "helpful": 8,
+            "photos": []
+        },
+        {
+            "answer_id": 7,
+            "body": "Its the best! Seriously magic fabric",
+            "date": "2021-02-27T18:45:24.000Z",
+            "answerer_name": "metslover",
+            "helpful": 7,
+            "photos": []
+        },
+        {
+            "answer_id": 57,
+            "body": "Suede",
+            "date": "2021-04-11T16:51:31.000Z",
+            "answerer_name": "metslover",
+            "helpful": 7,
+            "photos": []
+        },
+        {
+            "answer_id": 5,
+            "body": "Something pretty soft but I can't be sure",
+            "date": "2020-09-13T09:49:20.000Z",
+            "answerer_name": "metslover",
+            "helpful": 5,
+            "photos": [
+                {
+                    "url": "https://images.unsplash.com/photo-1530519729491-aea5b51d1ee1?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1651&q=80",
+                    "id": 1
+                },
+                {
+                    "url": "https://images.unsplash.com/photo-1511127088257-53ccfcc769fa?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1650&q=80",
+                    "id": 2
+                },
+                {
+                    "url": "https://images.unsplash.com/photo-1500603720222-eb7a1f997356?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1653&q=80",
+                    "id": 3
+                }
+            ]
+        },
+        {
+            "answer_id": 95,
+            "body": "Supposedly suede, but I think its synthetic",
+            "date": "2020-09-14T21:53:52.000Z",
+            "answerer_name": "metslover",
+            "helpful": 3,
+            "photos": []
+        }
+    ]
+}
  ```
   # 
   
